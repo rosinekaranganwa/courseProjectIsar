@@ -25,11 +25,6 @@ class IsarService {
     yield* isar.courses.where().watch();
   }
 
-  Future<void> updateCourse(Course updatedCourse) async {
-    final isar = await db;
-    await isar.writeTxn(() => isar.courses.put(updatedCourse));
-  }
-
   Future<void> deleteCourse(int courseId) async {
     final isar = await db;
     await isar.writeTxn(() => isar.courses.delete(courseId));
@@ -50,5 +45,14 @@ class IsarService {
       );
     }
     return Future.value(Isar.getInstance());
+  }
+
+  Future<void> updateCourseTitle(int courseId, String newTitle) async {
+    final isar = await db;
+    final course = await isar.courses.get(courseId);
+    if (course != null) {
+      course.title = newTitle;
+      await isar.writeTxn(() => isar.courses.put(course));
+    }
   }
 }
